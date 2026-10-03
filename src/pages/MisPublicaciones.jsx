@@ -28,7 +28,6 @@ export default function MisPublicaciones() {
   const [ocupado, setOcupado] = useState(null)
   const [confirmando, setConfirmando] = useState(null)
 
-  // Recarga la lista sin volver a poner la pantalla en carga: se usa
   // despues de publicar o eliminar, donde el usuario ya sabe que hay
   // algo pasando y un spinner taparia la pantalla.
   const recargar = useCallback(async () => {
@@ -82,7 +81,6 @@ export default function MisPublicaciones() {
     return por
   }, [vehiculos])
 
-  // ------------------------------------------------------------ Acciones
   const activar = async (id) => {
     setOcupado(id)
     setError('')

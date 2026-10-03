@@ -20,9 +20,7 @@ const admin = createClient(URL_SUPABASE, SECRET, { auth: { persistSession: false
 const resultados = []
 const check = (ok, nombre, detalle) => resultados.push({ ok: !!ok, nombre, detalle })
 
-// ------------------------------------------------------------------
 // Sesiones, una por "navegador"
-// ------------------------------------------------------------------
 async function navegador(correo, password) {
   const cliente = createClient(URL_SUPABASE, PUBLISHABLE, { auth: { persistSession: false } })
   const { data, error } = await cliente.auth.signInWithPassword({ email: correo, password })
@@ -32,9 +30,7 @@ async function navegador(correo, password) {
 
 console.log('\n=== FASE 6 · Verificacion de subasta en tiempo real ===\n')
 
-// ------------------------------------------------------------------
 // Logica pura del cliente (mismas funciones que usa la interfaz)
-// ------------------------------------------------------------------
 console.log('--- Deduccion del indicador de estado ---')
 
 const caso = (etiqueta, entrada, esperadoTexto) => {
@@ -115,9 +111,7 @@ check(
   casosParseo.map(([e, x]) => `"${e}"->${x}`).join(' · '),
 )
 
-// ------------------------------------------------------------------
 // Flujo real: unVehicle, dos cuentas, WebSocket
-// ------------------------------------------------------------------
 console.log('\n--- Flujo real entre dos navegadores ---')
 
 const duena = await navegador('maria@subasta.com', 'Subasta2026!')
@@ -275,7 +269,6 @@ if (errVeh) {
   await admin.from('vehiculos').delete().eq('id', id)
 }
 
-// ------------------------------------------------------------------
 console.log('')
 for (const r of resultados) {
   console.log(`  ${r.ok ? 'OK   ' : 'FALLA'} ${r.nombre.padEnd(42)} ${r.detalle}`)

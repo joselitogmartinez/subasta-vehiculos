@@ -1,13 +1,4 @@
--- ==================================================================
 -- 006 · Ruta de almacenamiento en la galeria
---
--- Para quitar una foto hay que borrar dos cosas: la fila de
--- fotos_vehiculo y el archivo real del bucket. La vista solo devolvia
--- la URL publica, que no sirve para borrar.
---
--- Se agrega `path` (la ruta dentro del bucket) al array de fotos.
--- No es nueva exposicion: el bucket es publico, las URLs ya se envian
--- completas, y la ruta se deduce de {user_id}/{vehiculo_id}/archivo.
 -- ==================================================================
 
 DROP VIEW IF EXISTS public.vw_vehiculos;

@@ -10,7 +10,6 @@ export default function Navbar() {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const contenedorRef = useRef(null)
 
-  // Cierra el menu si se hace clic fuera o se pulsa Escape.
   useEffect(() => {
     if (!menuAbierto) return
 

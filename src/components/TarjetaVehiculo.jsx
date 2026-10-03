@@ -4,8 +4,6 @@ import { dinero, enCuanto, etiquetaDano, etiquetaEstado, reloj, resumenTiempo, t
 import { useAhora } from '../lib/reloj'
 
 /**
- * Tarjeta del catalogo. Muestra la oferta vigente y la cuenta regresiva,
- * pero nunca quien ofertó: esa informacion no llega al navegador.
  */
 export default function TarjetaVehiculo({ vehiculo }) {
   const ahora = useAhora()

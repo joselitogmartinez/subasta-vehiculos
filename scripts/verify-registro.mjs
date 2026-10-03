@@ -35,9 +35,7 @@ const PASSWORD = 'Prueba2026Segura'
 console.log('\n=== Verificacion del registro de usuarios ===\n')
 console.log(`  Correo de la prueba: ${CORREO}\n`)
 
-// ------------------------------------------------------------------
 // 1. Registro
-// ------------------------------------------------------------------
 const { data: registro, error: errRegistro } = await navegador.auth.signUp({
   email: CORREO,
   password: PASSWORD,
@@ -93,9 +91,7 @@ if (userId) {
   }
 }
 
-// ------------------------------------------------------------------
 // 2. Sin sesion no se lee ningun perfil, ni siquiera el propio
-// ------------------------------------------------------------------
 const { data: ajeno, error: errAjeno } = await clienteAnonimo
   .from('profiles')
   .select('id')
@@ -107,9 +103,7 @@ check(
   errAjeno ? `bloqueado (${errAjeno.code})` : '0 filas devueltas',
 )
 
-// ------------------------------------------------------------------
 // 3. Inicio de sesion
-// ------------------------------------------------------------------
 const clienteLogin = createClient(URL_SUPABASE, PUBLISHABLE, { auth: { persistSession: false } })
 const { data: sesion, error: errLogin } = await clienteLogin.auth.signInWithPassword({
   email: CORREO,
@@ -132,9 +126,7 @@ if (sesion?.session) {
   )
 }
 
-// ------------------------------------------------------------------
 // 4. Contrasena incorrecta
-// ------------------------------------------------------------------
 const clienteMalo = createClient(URL_SUPABASE, PUBLISHABLE, { auth: { persistSession: false } })
 const { error: errMalo } = await clienteMalo.auth.signInWithPassword({
   email: CORREO,
@@ -143,15 +135,12 @@ const { error: errMalo } = await clienteMalo.auth.signInWithPassword({
 
 check(!!errMalo, 'contrasena incorrecta rechazada', errMalo?.message ?? 'ACEPTO (error)')
 
-// ------------------------------------------------------------------
 // Limpieza
-// ------------------------------------------------------------------
 if (userId) {
   await admin.auth.admin.deleteUser(userId)
   console.log('\n  Usuario de prueba eliminado.')
 }
 
-// ------------------------------------------------------------------
 for (const r of resultados) {
   console.log(`  ${r.ok ? 'OK   ' : 'FALLA'} ${r.nombre.padEnd(32)} ${r.detalle}`)
 }

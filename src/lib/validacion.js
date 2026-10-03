@@ -3,8 +3,6 @@
 // las funciones fn_* de PostgreSQL.
 
 /**
- * Contrasena "segura" segun lo pedido en el enunciado.
- * Devuelve la lista de problemas; vacia significa que cumple.
  */
 export function validarPassword(password) {
   const errores = []
@@ -56,9 +54,6 @@ export function validarRegistro({ nombre, apellido, correo, telefono, password, 
   return errores
 }
 
-// ------------------------------------------------------------------
-// Vehiculos
-// ------------------------------------------------------------------
 
 export const TRENES = ['AWD', 'FWD', 'RWD', '4WD']
 export const NIVELES_DANO = ['verde', 'amarillo', 'rojo']

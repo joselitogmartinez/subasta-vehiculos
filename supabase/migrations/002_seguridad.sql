@@ -1,21 +1,6 @@
--- ==================================================================
 -- 002 · Seguridad
--- Row Level Security, permisos y almacenamiento de imagenes.
---
--- Regla general: el cliente NUNCA escribe directo en las tablas de
--- negocio. Toda operacion que afecte una subasta pasa por funciones
--- SECURITY DEFINER (003), que son las unicas que pueden escribir.
 -- ==================================================================
 
-ALTER TABLE public.profiles      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.vehiculos     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.fotos_vehiculo ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.pujas         ENABLE ROW LEVEL SECURITY;
-
--- ------------------------------------------------------------------
--- profiles
--- Cada usuario ve y edita unicamente su propio perfil. Nadie mas.
--- ------------------------------------------------------------------
 DROP POLICY IF EXISTS perfiles_su_propio ON public.profiles;
 CREATE POLICY perfiles_su_propio
   ON public.profiles
@@ -31,13 +16,11 @@ CREATE POLICY perfiles_actualizar
   USING (id = auth.uid())
   WITH CHECK (id = auth.uid());
 
--- ------------------------------------------------------------------
 -- vehiculos
 -- Lectura: anonimos y usuarios ven las subastas activas. Cada
 --          propietario ve ademas sus borradores y sus propias
 --          publicaciones, para poder editarlas.
 -- Escritura: ninguna directa. Todo pasa por las RPCs.
--- ------------------------------------------------------------------
 DROP POLICY IF EXISTS vehiculos_leer ON public.vehiculos;
 CREATE POLICY vehiculos_leer
   ON public.vehiculos
@@ -45,10 +28,8 @@ CREATE POLICY vehiculos_leer
   TO anon, authenticated
   USING (estado = 'activo' OR user_id = auth.uid());
 
--- ------------------------------------------------------------------
 -- fotos_vehiculo
 -- Se pueden ver las fotos de vehiculos activos y las propias.
--- ------------------------------------------------------------------
 DROP POLICY IF EXISTS fotos_leer ON public.fotos_vehiculo;
 CREATE POLICY fotos_leer
   ON public.fotos_vehiculo
@@ -88,18 +69,14 @@ CREATE POLICY fotos_borrar
     )
   );
 
--- ------------------------------------------------------------------
 -- pujas
 -- SIN POLITICA DE LECTURA. No es un olvido: es el requisito de
 -- anonimato. La oferta vigente se lee de vehiculos.monto_actual.
 -- Tampoco hay politica de INSERT: la puja solo puede hacerse
 -- mediante fn_registrar_puja, que valida las reglas de negocio.
--- ------------------------------------------------------------------
 -- (intencionalmente vacio)
 
--- ------------------------------------------------------------------
 -- Permisos por defecto
--- ------------------------------------------------------------------
 
 -- El anonimo (navegador sin sesion) y el usuario autenticado solo
 -- pueden LEER las tablas que RLS protege. Sin escritura directa.
@@ -112,10 +89,8 @@ REVOKE ALL                         ON public.pujas     FROM anon, authenticated;
 GRANT ALL ON public.profiles, public.vehiculos, public.fotos_vehiculo, public.pujas TO service_role;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO service_role;
 
--- ------------------------------------------------------------------
 -- Storage · bucket publico para las fotos de los vehiculos
 -- Estructura de carpetas: {user_id}/{vehiculo_id}/{archivo}
--- ------------------------------------------------------------------
 -- Nota: este archivo se ejecuta con el rol `postgres`, que NO es dueno
 -- de storage.buckets ni de storage.objects. Por eso se insertan filas y
 -- se crean policies, pero no se pueden usar Sentencias COMMENT ON ni

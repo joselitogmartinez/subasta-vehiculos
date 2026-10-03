@@ -1,17 +1,4 @@
--- ==================================================================
 -- 004 · Normalizacion en las vistas
---
--- Problema que corrige: los datos pueden llegar con distinta capitalizacion
--- segun quien los escriba. fn_publicar_vehiculo normaliza marca y modelo a
--- mayusculas, pero el seed y una carga manual por SQL no pasan por ahi.
--- Como vw_catalogos devuelve upper(marca) y el filtro del cliente usa
--- eq(marca, <valor del desplegable>), un vehiculo guardado como
--- "Chevrolet" no era encontrado al filtrar por "CHEVROLET": el desplegable
--- ofrecia una opcion que no devolvia nada.
---
--- La solucion es normalizar tambien en la vista, de modo que lo que el
--- desplegable ofrece y lo que el filtro compara sean siempre el mismo valor,
--- sin importar como se haya escrito el dato en la tabla.
 -- ==================================================================
 
 CREATE OR REPLACE VIEW public.vw_inventario

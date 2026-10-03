@@ -25,7 +25,6 @@ console.log('\n=== FASE 5 · Verificacion de filtros del catalogo ===\n')
 const todo = await consultarInventario(anon, con({}))
 check(todo.length > 0, 'sin filtros devuelve el catalogo', `${todo.length} vehiculos`)
 
-// --------------------------------------------------------------- Catalogos
 const catalogos = await cargarCatalogos(anon)
 check(
   (catalogos?.marcas?.length ?? 0) > 1 && (catalogos?.anio_min ?? 0) > 1900,
@@ -87,7 +86,6 @@ for (const { catalogo, columna, filtro } of CAMPOS_CATALOGO) {
   )
 }
 
-// -------------------------------------------------------------- Contadores
 const conteo = await contarPorEstado(anon)
 check(
   conteo.total === todo.length && conteo.activa > 0,
@@ -95,7 +93,6 @@ check(
   `activa=${conteo.activa} programada=${conteo.programada} desierta=${conteo.desierta} vendida=${conteo.vendida}`,
 )
 
-// ---------------------------------------------------------------- Marca
 const marca = catalogos.marcas[0]
 const porMarca = await consultarInventario(anon, con({ marca }))
 check(
@@ -104,7 +101,6 @@ check(
   `${marca} -> ${porMarca.length} (${nombres(porMarca)})`,
 )
 
-// ---------------------------------------------------------------- Daño
 const rojo = await consultarInventario(anon, con({ dano: 'rojo' }))
 check(
   rojo.length > 0 && rojo.every((v) => v.nivel_dano === 'rojo'),
@@ -119,7 +115,6 @@ check(
   `verde -> ${verde.length}`,
 )
 
-// ------------------------------------------------------------- Rango año
 const enRango = await consultarInventario(anon, con({ anioMin: 2020, anioMax: 2021 }))
 check(
   enRango.length > 0 && enRango.every((v) => v.anio >= 2020 && v.anio <= 2021),
@@ -127,7 +122,6 @@ check(
   `2020-2021 -> ${enRango.length} (${nombres(enRango)})`,
 )
 
-// ------------------------------------------------------- Búsqueda libre
 const texto = await consultarInventario(anon, con({ q: 'corolla' }))
 check(
   texto.length > 0 &&
@@ -146,7 +140,6 @@ check(
 const textoIncierta = await consultarInventario(anon, con({ q: 'zzz-no-existe' }))
 check(textoIncierta.length === 0, 'búsqueda sin resultados', `"zzz-no-existe" -> 0`)
 
-// ------------------------------------------- Caracteres especiales (injection)
 const conSimbolos = await consultarInventario(anon, con({ q: 'toyota,()%*\\' }))
 check(
   Array.isArray(conSimbolos),
@@ -154,7 +147,6 @@ check(
   `${conSimbolos.length} resultados, sin error`,
 )
 
-// ------------------------------------------------------------ Combinados
 // Los valores salen del catalogo, no escritos a mano: la vista normaliza
 // a mayusculas y eq() distingue mayusculas de minusculas.
 const [tipoAuto, combustibleAuto, trenFwd] = [
@@ -186,7 +178,6 @@ check(
   `${catalogos.marcas[0]} + amarillo -> ${excluyente.length}`,
 )
 
-// ---------------------------------------------------------------- Estado
 for (const estado of ['activa', 'programada', 'vendida', 'desierta']) {
   const porEstado = await consultarInventario(anon, con({ estado }))
   check(
@@ -196,7 +187,6 @@ for (const estado of ['activa', 'programada', 'vendida', 'desierta']) {
   )
 }
 
-// --------------------------------------------------------------- Ordenes
 const asc = await consultarInventario(anon, con({ orden: 'precio-asc' }))
 const precios = asc.map((v) => Number(v.monto_base))
 check(
@@ -227,7 +217,6 @@ check(
   urgente.length > 0 ? `primero cierra ${new Date(urgente[0].fecha_cierre).toLocaleString('es-GT')}` : 'sin subastas activas',
 )
 
-// --------------------------------------------------- Anonimo solo lectura
 const conBorrador = await consultarInventario(
   anon,
   con({ estado: 'programada' }),
@@ -238,7 +227,6 @@ check(
   `${conBorrador.length} programadas, ningun borrador`,
 )
 
-// ---------------------------------------------------------------- Informe
 console.log('')
 for (const r of resultados) {
   console.log(`  ${r.ok ? 'OK   ' : 'FALLA'} ${r.nombre.padEnd(40)} ${r.detalle}`)

@@ -86,9 +86,6 @@ export const enCuanto = (fecha, ahora = Date.now()) => {
   return `${t.segundos} s`
 }
 
-// ------------------------------------------------------------------
-// Etiquetas de dominio
-// ------------------------------------------------------------------
 
 export const ETIQUETA_ESTADO = {
   activa: { texto: 'En vivo', tono: 'verde' },

@@ -1,21 +1,6 @@
--- ==================================================================
 -- 005 · Vista de detalle
---
--- Reemplaza vw_vehiculos por una version que:
---   1. Normaliza los textos igual que vw_inventario, para que el detalle
---      y el catalogo muestren la misma cadena.
---   2. NO expone user_id. No hay ninguna razon para que el navegador
---      reciba identificadores de usuario: la interfaz solo necesita
---      saber si la subasta es del visitante, y eso lo responde el
---      servidor con es_mio.
---   3. Calcula es_mio en el servidor. auth.uid() devuelve NULL para un
---      anonimo, y NULL = NULL es NULL, asi que un visitante sin sesion
---      simplemente obtiene false en lugar de un error.
 -- ==================================================================
 
--- Hay que DROP y no solo REPLACE: esta vista cambia el conjunto y el
--- orden de sus columnas, y CREATE OR REPLACE VIEW no permite quitar
--- columnas. Al dropearla se pierde el GRANT, asi que se reotorga al final.
 DROP VIEW IF EXISTS public.vw_vehiculos;
 
 CREATE VIEW public.vw_vehiculos

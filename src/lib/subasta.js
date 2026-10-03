@@ -1,34 +1,16 @@
 /**
- * Motor de subasta del lado del navegador.
- *
- * REGLA DE ORO DEL ANONIMATO
- * --------------------------
- * El navegador nunca sabe quien es el mejor postor, y no hace falta.
- * El servidor difunde unicamente el monto; cada cliente deduce su propia
- * situacion comparando ese monto contra su ultima oferta:
- *
- *   total_pujas === 0        -> nadie ha ofertado
- *   monto > miOferta          -> me superaron
- *   monto === miOferta       -> soy el mejor postor
- *
- * Es seguro porque fn_monto_minimo garantiza que una oferta valida es
- * siempre MAYOR que la vigente (+10%), asi que dos usuarios nunca pueden
- * tener el mismo monto. La igualdad no es ambigua: significa "esta oferta
- * es la mia y sigue en cabeza".
- *
- * Por eso `mi_oferta` viene de fn_estado_subasta, que solo le devuelve
- * las pujas del propio usuario, y nunca de una consulta a `pujas`.
+ * El navegador nunca sabe quien es el mejor postor y no hace falta.
+ * El servidor difunde solo el monto; cada cliente deduce su situacion
+ * comparandolo contra su ultima oferta. Es seguro porque el minimo es
+ * siempre +10% sobre la vigente, asi que dos postores nunca empatan y la
+ * igualdad significa "esta oferta es la mia y sigue en cabeza".
  */
 
 const PREFIJO = 'subastaya:mi-oferta'
 
 const clave = (vehiculoId, usuarioId) => `${PREFIJO}:${vehiculoId}:${usuarioId ?? 'anonimo'}`
 
-/**
- * Ultima oferta del usuario, para pintar el estado al instante sin
- * esperar la respuesta del servidor. No es la fuente de verdad: al abrir
- * la pagina se consulta fn_estado_subasta y manda ese valor.
- */
+/** Ultima oferta del usuario. El servidor sigue siendo la fuente de verdad. */
 export function leerMiOferta(vehiculoId, usuarioId) {
   if (typeof localStorage === 'undefined') return null
   const bruto = localStorage.getItem(clave(vehiculoId, usuarioId))
@@ -42,7 +24,7 @@ export function guardarMiOferta(vehiculoId, usuarioId, monto) {
   try {
     localStorage.setItem(clave(vehiculoId, usuarioId), String(monto))
   } catch {
-    // Modo privado o cuota llena: se sigue funcionando con el estado en memoria.
+    // Modo privado o cuota llena: se sigue con el estado en memoria.
   }
 }
 
@@ -53,10 +35,6 @@ export function borrarMiOferta(vehiculoId, usuarioId) {
   } catch {}
 }
 
-/**
- * Situacion del visitante frente a la subasta.
- * Devuelve el tono del aviso y el texto ya redactado.
- */
 export function situacionPostor({ estado, totalPujas, montoActual, miOferta, autenticado, esMio }) {
   if (esMio) {
     return { tono: 'azul', texto: 'Esta subasta es tuya', icono: '👤' }
@@ -102,10 +80,6 @@ export function situacionPostor({ estado, totalPujas, montoActual, miOferta, aut
   }
 }
 
-/**
- * Sugerencias de puja. Siempre multiples del minimo, para que el monto
- * que se ve coincida con los botones y no haya sorpresas al confirmar.
- */
 export function sugerenciasPuja(montoMinimo, yaOfertado) {
   const base = Number(montoMinimo) || 0
   if (base <= 0) return []
@@ -126,14 +100,9 @@ export function sugerenciasPuja(montoMinimo, yaOfertado) {
 }
 
 /**
- * Convierte lo que escribe el usuario a numero.
- *
- * Se descartan todos los caracteres que no sean digitos, porque en esta
- * plataforma los montos son siempre quetzales enteros. Filtrar solo los
- * no-numericos dejaba pasar el punto de "Q. 30,000" y Number lo leia
- * como decimal: "Q. 30,000" terminaba siendo 0.3 y la oferta se enviaba
- * mal. Aceptar "20,000", "Q. 30,000", "$45.500" y "20 000" da el mismo
- * resultado, que es lo que espera cualquiera que teclee un monto.
+ * Solo se conservan los digitos porque los montos son quetzales enteros.
+ * Filtrar solo los no-numericos dejaba pasar el punto de "Q. 30,000" y
+ * Number lo leia como decimal: terminaba siendo 0.3.
  */
 export function parsearMonto(texto) {
   if (typeof texto === 'number') return Number.isFinite(texto) ? texto : null

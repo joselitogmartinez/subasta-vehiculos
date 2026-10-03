@@ -1,11 +1,4 @@
-/**
- * Galeria de fotos de un vehiculo.
- *
- * Estructura en el bucket: {user_id}/{vehiculo_id}/{NN}.ext
- * Los archivos siempre cuelgan de la carpeta del usuario, y eso lo
- * revisa la policy de Storage: nadie puede escribir fuera de su carpeta
- * aunque manipule la ruta desde el navegador.
- */
+/** Estructura en el bucket: {user_id}/{vehiculo_id}/{NN}.ext */
 
 export const MINIMO_FOTOS = 5
 export const MAXIMO_FOTOS = 12
@@ -15,7 +8,6 @@ const TIPOS_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
 
 const EXTENSIONES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/avif': 'avif' }
 
-/** Revisa un archivo antes de subirlo. Devuelve el motivo si no vale. */
 export function revisarArchivo(archivo, cantidadActual = 0) {
   if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
     return `Formato no admitido. Usa JPG, PNG, WEBP o AVIF.`
@@ -33,7 +25,6 @@ export function revisarArchivo(archivo, cantidadActual = 0) {
   return null
 }
 
-/** Filtra una lista de archivos y separa los válidos de los rechazados. */
 export function revisarSeleccion(archivos, cantidadActual = 0) {
   const aceptados = []
   const rechazados = []
@@ -51,16 +42,7 @@ export function faltanFotos(cantidad) {
   return Math.max(0, MINIMO_FOTOS - cantidad)
 }
 
-/**
- * Sube las fotos al bucket y devuelve las filas para `fotos_vehiculo`.
- *
- * `ordenInicial` sirve al editar: las fotos nuevas se colocan despues de
- * las que ya existen en lugar de empezar de cero y pisar el orden.
- *
- * Se sube de a una para poder informar el avance y para no abortar toda
- * la operacion si un archivo falla: el resto ya quedo en el bucket y se
- * reporta igual.
- */
+/** Sube de a una para informar el avance sin abortar si un archivo falla. */
 export async function subirFotos(
   cliente,
   usuarioId,
@@ -110,10 +92,7 @@ export async function registrarFotos(cliente, filas) {
   if (error) throw error
 }
 
-/**
- * Borra una foto: primero el archivo del bucket y despues la fila.
- * Al reves, quedaria un archivo huerfano que ocupa espacio para siempre.
- */
+/** Primero el archivo del bucket, despues la fila: al reves queda huerfano. */
 export async function eliminarFoto(cliente, foto) {
   if (foto.path) {
     const { error } = await cliente.storage.from('vehiculos').remove([foto.path])
@@ -123,7 +102,6 @@ export async function eliminarFoto(cliente, foto) {
   if (error) throw error
 }
 
-/** Libera el espacio de un vehiculo que se elimina por completo. */
 export async function limpiarArchivos(cliente, usuarioId, vehiculoId) {
   const carpeta = `${usuarioId}/${vehiculoId}`
   const { data } = await cliente.storage.from('vehiculos').list(carpeta, { limit: 100 })
@@ -135,7 +113,6 @@ export async function limpiarArchivos(cliente, usuarioId, vehiculoId) {
   return rutas.length
 }
 
-/** Renombra los archivos para que el orden coincida con el mostrado. */
 export async function reordenarFotos(cliente, usuarioId, vehiculoId, fotos) {
   const filas = []
 

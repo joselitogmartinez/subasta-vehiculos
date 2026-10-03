@@ -1,12 +1,6 @@
--- ==================================================================
 -- 001 · Esquema
--- Tablas, indices y funciones puras. Sin RLS todavia (ver 002).
--- Idioma: espanol, sin acentos en identificadores.
 -- ==================================================================
 
--- ------------------------------------------------------------------
--- profiles · datos publicos del usuario (el correo vive en auth.users)
--- ------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.profiles (
   id          uuid PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
   nombre      text NOT NULL CHECK (char_length(nombre) BETWEEN 2 AND 60),
@@ -19,12 +13,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 COMMENT ON TABLE public.profiles IS
   'Datos publicos del usuario. El correo no se expone al publico: se sincroniza desde auth.users.';
 
--- ------------------------------------------------------------------
 -- vehiculos · publicacion + parametros de subasta
 -- monto_actual y total_pujas se desnormalizan aqui a proposito:
 -- permiten exponer la oferta mas alta SIN abrir lectura sobre pujas,
 -- que es lo que garantiza el anonimato de los postores.
--- ------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.vehiculos (
   id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id          uuid NOT NULL REFERENCES public.profiles (id) ON DELETE CASCADE,
@@ -74,11 +66,9 @@ CREATE INDEX IF NOT EXISTS idx_vehiculos_tipo        ON public.vehiculos (tipo_a
 CREATE INDEX IF NOT EXISTS idx_vehiculos_cierre      ON public.vehiculos (fecha_cierre);
 CREATE INDEX IF NOT EXISTS idx_vehiculos_publicador  ON public.vehiculos (user_id);
 
--- ------------------------------------------------------------------
 -- fotos_vehiculo · galeria. El enunciado exige minimo 5 por vehiculo,
 -- pero eso lo valida fn_activar_publicacion para no bloquear la carga
 -- de fotos antes de tener el id del vehiculo.
--- ------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.fotos_vehiculo (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   vehiculo_id   uuid NOT NULL REFERENCES public.vehiculos (id) ON DELETE CASCADE,
@@ -90,10 +80,8 @@ CREATE TABLE IF NOT EXISTS public.fotos_vehiculo (
 
 CREATE INDEX IF NOT EXISTS idx_fotos_vehiculo ON public.fotos_vehiculo (vehiculo_id, orden);
 
--- ------------------------------------------------------------------
 -- pujas · ofertas. SIN NINGUNA POLITICA DE LECTURA: la identidad de
 -- quien oferta no sale del servidor. El publico solo ve el monto.
--- ------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.pujas (
   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   vehiculo_id  uuid NOT NULL REFERENCES public.vehiculos (id) ON DELETE CASCADE,
@@ -104,9 +92,7 @@ CREATE TABLE IF NOT EXISTS public.pujas (
 
 CREATE INDEX IF NOT EXISTS idx_pujas_vehiculo ON public.pujas (vehiculo_id, monto DESC);
 
--- ------------------------------------------------------------------
 -- Funciones puras (sin efectos sobre tablas)
--- ------------------------------------------------------------------
 
 -- Estado de la subasta derivado de las fechas. Evita depender de un
 -- cron: el cierre se calcula al leer.
@@ -148,9 +134,7 @@ AS $$
   SELECT ceil(greatest(p_monto_base, coalesce(p_monto_actual, 0) * 1.10) / 100) * 100;
 $$;
 
--- ------------------------------------------------------------------
 -- Mantenimiento
--- ------------------------------------------------------------------
 
 -- Crear el perfil automaticamente al registrarse en Supabase Auth.
 -- Los datos llegan en raw_user_meta_data desde el formulario de registro.

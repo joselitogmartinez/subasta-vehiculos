@@ -45,7 +45,6 @@ function DetalleVehiculoInterno({ id }) {
   const [error, setError] = useState('')
   const [noEncontrado, setNoEncontrado] = useState(idInvalido)
 
-  // ------------------------------------------------------------ Carga
   useEffect(() => {
     if (idInvalido) return
 
@@ -106,7 +105,6 @@ function DetalleVehiculoInterno({ id }) {
     }
   }, [id, idInvalido])
 
-  // --------------------------------------------------- Tiempo real
   const alCambiar = useCallback((payload) => {
     setEstado((prev) => ({
       ...(prev ?? {}),
@@ -119,7 +117,6 @@ function DetalleVehiculoInterno({ id }) {
 
   const conectado = useSubastaEnVivo(id, alCambiar)
 
-  // ------------------------------------------------------------ Ofertar
   const ofertar = useCallback(
     async (monto) => {
       const { error: err } = await supabase.rpc('fn_registrar_puja', {

@@ -62,9 +62,7 @@ if (rezagados?.length) console.log(`  ${rezagados.length} vehiculo(s) de prueba 
 const maria = await sesion('maria@subasta.com', 'Subasta2026!')
 const carlos = await sesion('carlos@subasta.com', 'Subasta2026!')
 
-// ------------------------------------------------------------------
 // 1. Crear el borrador
-// ------------------------------------------------------------------
 const { data: idVehiculo, error: errCrear } = await maria.cliente.rpc('fn_publicar_vehiculo', {
   p_datos: FICHA,
 })
@@ -90,12 +88,10 @@ check(
   'invisible para el publico mientras esta en borrador',
 )
 
-// ------------------------------------------------------------------
 // 2. El minimo de 5 fotos
 //
 // Cada caso parte de cero. Si se acumaran las fotos entre intentos los
 // conteos dejan de coincidir con lo que dice el caso y la prueba miente.
-// ------------------------------------------------------------------
 async function borrarTodasLasFotos() {
   const { data } = await maria.cliente.from('fotos_vehiculo').select('id').eq('vehiculo_id', id)
   for (const f of data ?? []) {
@@ -147,9 +143,7 @@ for (const n of [1, 3, 4]) {
   )
 }
 
-// ------------------------------------------------------------------
 // 3. Quinta foto y publicacion
-// ------------------------------------------------------------------
 await subirFotos(1, 4)
 mensaje = await intentarActivar()
 check(mensaje === null, 'publica al llegar a 5 fotografias', mensaje ?? 'publicada')
@@ -169,9 +163,7 @@ const { error: errAnonEdit } = await anon
   .eq('id', id)
 check(!!errAnonEdit, 'el anonimo no puede editarlo', errAnonEdit?.code ?? 'PERMITIDO (error)')
 
-// ------------------------------------------------------------------
 // 4. Aislamiento entre usuarios
-// ------------------------------------------------------------------
 const { error: errAjeno } = await carlos.cliente.rpc('fn_actualizar_vehiculo', {
   p_vehiculo_id: id,
   p_datos: { ...FICHA, marca: 'ROBADO' },
@@ -183,9 +175,7 @@ const { error: errAjenoBorrar } = await carlos.cliente.rpc('fn_eliminar_vehiculo
 })
 check(!!errAjenoBorrar, 'otro usuario no puede eliminarlo', errAjenoBorrar?.message ?? 'PERMITIDO (error)')
 
-// ------------------------------------------------------------------
 // 5. Editar la ficha
-// ------------------------------------------------------------------
 const { error: errEditar } = await maria.cliente.rpc('fn_actualizar_vehiculo', {
   p_vehiculo_id: id,
   p_datos: {
@@ -208,9 +198,7 @@ check(
   `nivel_dano=${editada?.nivel_dano}, fotos=${editada?.fotos?.length}`,
 )
 
-// ------------------------------------------------------------------
 // 6. Con pujas, los parametros economicos se congelan
-// ------------------------------------------------------------------
 await admin.from('pujas').insert({ vehiculo_id: id, user_id: carlos.userId, monto: 30000 })
 
 const { error: errCongelar } = await maria.cliente.rpc('fn_actualizar_vehiculo', {
@@ -229,12 +217,10 @@ const { error: errFichaOk } = await maria.cliente.rpc('fn_actualizar_vehiculo', 
 })
 check(!errFichaOk, 'la ficha si se puede editar con pujas', errFichaOk?.message ?? 'guardado')
 
-// ------------------------------------------------------------------
 // 7. Bajar de 5 fotos con el vehiculo ya publicado
 //
 // Se dejan 5 fotos y luego se quitan dos, para quedar en 3: por debajo
 // del minimo. fn_actualizar_vehiculo debe reversar el cambio entero.
-// ------------------------------------------------------------------
 const { data: paraBorrar } = await maria.cliente
   .from('fotos_vehiculo')
   .select('id')
@@ -261,9 +247,7 @@ check(
   errSinCinco?.message ?? `PERMITIDO (error), quedo con ${restantes?.length} fotos`,
 )
 
-// ------------------------------------------------------------------
 // 8. Eliminar
-// ------------------------------------------------------------------
 const { error: errBorrar } = await maria.cliente.rpc('fn_eliminar_vehiculo', {
   p_vehiculo_id: id,
 })
@@ -297,7 +281,6 @@ check(
   `${(antes ?? []).length} archivos -> ${borrados} borrados -> ${(despuesArchivos ?? []).length} restantes`,
 )
 
-// ------------------------------------------------------------------
 console.log('')
 for (const r of resultados) {
   console.log(`  ${r.ok ? 'OK   ' : 'FALLA'} ${r.nombre.padEnd(48)} ${r.detalle}`)

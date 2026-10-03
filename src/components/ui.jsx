@@ -1,4 +1,3 @@
-// Primitivas de interfaz reutilizadas en toda la aplicacion.
 // Son deliberadamente simples: envuelven <button>, <input>, <span>, etc.
 // para que el estilo viva en una sola hoja (ui.css) y el marcado se lea
 // sin ruido.
@@ -6,9 +5,6 @@
 import { useId } from 'react'
 import '../styles/ui.css'
 
-// ------------------------------------------------------------------
-// Boton
-// ------------------------------------------------------------------
 export function Boton({
   variante = 'primario',
   tamano = 'md',
@@ -37,9 +33,6 @@ export function Boton({
   )
 }
 
-// ------------------------------------------------------------------
-// Campo de formulario
-// ------------------------------------------------------------------
 export function Campo({
   etiqueta,
   error,
@@ -89,10 +82,8 @@ export function Campo({
   )
 }
 
-// ------------------------------------------------------------------
 // Select, mismo estilo que Campo. `opciones` acepta cadenas sueltas o
 // pares { valor, texto } cuando lo que se guarda no es lo que se ve.
-// ------------------------------------------------------------------
 export function Seleccion({ etiqueta, error, ayuda, opciones = [], placeholder, id, ...props }) {
   const generado = useId()
   const campoId = id ?? generado
@@ -125,9 +116,6 @@ export function Seleccion({ etiqueta, error, ayuda, opciones = [], placeholder, 
   )
 }
 
-// ------------------------------------------------------------------
-// Badge
-// ------------------------------------------------------------------
 export function Badge({ tono = 'neutro', punto = false, children }) {
   return (
     <span className={`badge badge--${tono}`}>
@@ -137,9 +125,6 @@ export function Badge({ tono = 'neutro', punto = false, children }) {
   )
 }
 
-// ------------------------------------------------------------------
-// Alerta
-// ------------------------------------------------------------------
 export function Alerta({ tono = 'info', titulo, children }) {
   if (!children && !titulo) return null
 
@@ -151,9 +136,6 @@ export function Alerta({ tono = 'info', titulo, children }) {
   )
 }
 
-// ------------------------------------------------------------------
-// Estados de carga y vacio
-// ------------------------------------------------------------------
 export function Cargando({ texto = 'Cargando...' }) {
   return (
     <div className="cargando" role="status">

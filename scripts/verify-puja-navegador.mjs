@@ -141,9 +141,7 @@ async function ir(url, espera = 3500) {
 const resultados = []
 const check = (ok, nombre, detalle) => resultados.push({ ok: !!ok, nombre, detalle })
 
-// ------------------------------------------------------------------
 // 1. Iniciar sesion
-// ------------------------------------------------------------------
 await ir(`${BASE}/login`)
 
 const inicioOk = await evaluar(`
@@ -199,9 +197,7 @@ check(
   `ruta=${estadoSesion.ruta}, enlaces de sesion=${estadoSesion.conSesion}`,
 )
 
-// ------------------------------------------------------------------
 // 2. Entrar a una subasta activa
-// ------------------------------------------------------------------
 await ir(`${BASE}/`, 4000)
 
 // Se busca una subasta activa que NO sea del usuario conectado: el
@@ -303,9 +299,7 @@ const panel = await evaluar(`
   `)
   check(habilitado === true, 'boton habilitado con monto valido', `disabled=${habilitado}`)
 
-  // ------------------------------------------------------------------
   // 3. Errores de JavaScript acumulados
-  // ------------------------------------------------------------------
   const referencias = erroresConsola.filter((e) => /is not defined/i.test(e))
   const otros = erroresConsola.filter((e) => !/is not defined/i.test(e))
 

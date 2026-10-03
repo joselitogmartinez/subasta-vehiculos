@@ -43,7 +43,6 @@ export default function ProveedorAuth({ children }) {
     }
   }, [])
 
-  // Carga el perfil del usuario conectado, una vez por id.
   useEffect(() => {
     const id = usuario?.id
     if (!id || perfiles[id]) return

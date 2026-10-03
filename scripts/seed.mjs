@@ -49,10 +49,8 @@ const admin = createClient(URL_SUPABASE, SECRET_KEY, { auth: { persistSession: f
 const HORA = 3600 * 1000
 const DIA = 24 * HORA
 
-// ------------------------------------------------------------------
 // Usuarios de prueba. El enunciado pide al menos 3 para poder hacer
 // pruebas cruzadas de subasta desde varios navegadores.
-// ------------------------------------------------------------------
 const USUARIOS = [
   {
     correo: 'maria@subasta.com',
@@ -77,13 +75,11 @@ const USUARIOS = [
   },
 ]
 
-// ------------------------------------------------------------------
 // Flota de vehiculos.
 //   inicio/cierre se calculan relativos a ahora para que el profesor
 //   siempre encuentre subastas activas, aunque Corra el seed en dia distinto.
 //   pujas: [indice de usuario, monto]. Se respetan las reglas del +10%
 //   para que los datos de ejemplo sean coherentes con el motor.
-// ------------------------------------------------------------------
 const FOTOS = {
   corolla: [
     '2020 Toyota Corolla LE sedan.jpg',
@@ -395,9 +391,7 @@ const VEHICULOS = [
 
 const creditos = []
 
-// ------------------------------------------------------------------
 // Utilidades
-// ------------------------------------------------------------------
 
 async function resolverFotos(titulos) {
   const porPagina = 20
@@ -455,9 +449,7 @@ const extension = (nombre) => {
   return m ? m[1].toLowerCase() : 'jpg'
 }
 
-// ------------------------------------------------------------------
 // Limpieza previa
-// ------------------------------------------------------------------
 async function limpiar() {
   console.log('\n--- Limpiando datos de demostracion anteriores ---')
 
@@ -485,9 +477,7 @@ async function limpiar() {
   }
 }
 
-// ------------------------------------------------------------------
 // Creacion de usuarios
-// ------------------------------------------------------------------
 async function crearUsuarios() {
   console.log('\n--- Creando usuarios de prueba ---')
   const ids = []
@@ -519,9 +509,6 @@ async function crearUsuarios() {
   return ids
 }
 
-// ------------------------------------------------------------------
-// Vehiculos
-// ------------------------------------------------------------------
 async function crearVehiculos(idsUsuarios) {
   console.log('\n--- Creando vehiculos ---')
 
@@ -642,9 +629,7 @@ async function crearVehiculos(idsUsuarios) {
   return creadas
 }
 
-// ------------------------------------------------------------------
 // Informe
-// ------------------------------------------------------------------
 async function informe() {
   console.log('\n--- Inventario resultante ---')
 
@@ -674,7 +659,6 @@ async function informe() {
   console.log(`  ${Object.entries(licencias).map(([l, n]) => `${l}: ${n}`).join('  ')}`)
 }
 
-// ------------------------------------------------------------------
 console.log('\n=== FASE 3 · Datos de demostracion ===\n')
 
 try {

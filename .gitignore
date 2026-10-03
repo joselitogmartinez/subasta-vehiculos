@@ -20,7 +20,6 @@ dist-ssr
 # Secretos: nunca subir al repositorio
 .env
 .env.*
-!.env.example
 
 # Editor directories and files
 .vscode/*

@@ -1,20 +1,6 @@
--- ==================================================================
 -- 003 · API
--- Vistas publicas, funciones de negocio y difusion en tiempo real.
---
--- Las funciones son SECURITY DEFINER porque las policies de 002
--- quitan la escritura directa al cliente. Aqui es donde viven las
--- reglas de la subasta: monto base, incremento del 10% y ventana de
--- tiempo. El frontend nunca decide si una oferta es valida.
 -- ==================================================================
 
--- ------------------------------------------------------------------
--- Vistas
--- security_invoker = true hace que la consulta se ejecute con los
--- permisos de quien pregunta, de modo que RLS se sigue aplicando.
--- ------------------------------------------------------------------
-
--- Catalogo publico: una fila por vehiculo, con foto de portada.
 CREATE OR REPLACE VIEW public.vw_inventario
 WITH (security_invoker = true) AS
 SELECT
@@ -121,9 +107,7 @@ SELECT
   (SELECT min(anio) FROM public.vehiculos WHERE estado = 'activo') AS anio_min,
   (SELECT max(anio) FROM public.vehiculos WHERE estado = 'activo') AS anio_max;
 
--- ------------------------------------------------------------------
 -- Funciones de negocio
--- ------------------------------------------------------------------
 
 -- Estado de una subasta concreta, incluido el estado personal del
 -- usuario que pregunta. Nunca revela quien es el mejor postor.
@@ -439,14 +423,12 @@ BEGIN
 END;
 $$;
 
--- ------------------------------------------------------------------
 -- Difusion en tiempo real
 --
 -- Se dispara cuando cambia la oferta mas alta. El payload NO lleva
 -- user_id: los clientes deducen si van ganando comparando el monto
 -- recibido contra su propia ultima oferta. Asi el anonimato se
 -- mantiene de punta a punta.
--- ------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.fn_trg_diffundir_puja()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -493,9 +475,7 @@ FOR EACH ROW
 WHEN (OLD.monto_actual IS DISTINCT FROM NEW.monto_actual)
 EXECUTE FUNCTION public.fn_trg_diffundir_puja();
 
--- ------------------------------------------------------------------
 -- Permisos de ejecucion
--- ------------------------------------------------------------------
 
 -- El anonimo puede ver el estado de una subasta, pero no ofertar.
 GRANT EXECUTE ON FUNCTION public.fn_estado_subasta(uuid) TO anon, authenticated;

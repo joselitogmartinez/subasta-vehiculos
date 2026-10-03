@@ -42,9 +42,7 @@ const check = (ok, nombre, detalle) => {
 
 console.log('\n=== FASE 3 · Verificacion de reglas de puja ===\n')
 
-// ------------------------------------------------------------------
 // Sesiones reales
-// ------------------------------------------------------------------
 // Una corrida anterior se interrumpio antes de su limpieza y dejo un
 // vehiculo de pruebas visible en el catalogo publico. Se borran todos
 // los que usen la marca reservada antes de empezar.
@@ -64,9 +62,7 @@ const carlos = await sesion(CRED.carlos.correo, CRED.carlos.password)
 const ana = await sesion(CRED.ana.correo, CRED.ana.password)
 check(true, 'sesiones', '3 usuarios de prueba inicia sesion correctamente')
 
-// ------------------------------------------------------------------
 // Vehiculo temporal de pruebas
-// ------------------------------------------------------------------
 const { data: temporal, error: errVeh } = await admin
   .from('vehiculos')
   .insert({
@@ -116,9 +112,7 @@ const aceptada = async (nombre, cliente, monto, esperadoActual) => {
   check(ok, nombre, ok ? `aceptada, oferta actual Q. ${esperadoActual.toLocaleString('es-GT')}` : `RECHAZADA: ${msg}`)
 }
 
-// ------------------------------------------------------------------
 // Reglas de puja
-// ------------------------------------------------------------------
 console.log('--- Reglas de oferta ---')
 
 await rechazada('bajo el monto base', ana.cliente, 19999, 'minimo')
@@ -138,9 +132,7 @@ await aceptada('oferta valida', ana.cliente, 24200, 24200)
 await rechazada('por debajo del minimo recalculado', carlos.cliente, 26699, 'minimo')
 await aceptada('oferta valida del segundo postor', carlos.cliente, 26700, 26700)
 
-// ------------------------------------------------------------------
 // Ventana de tiempo
-// ------------------------------------------------------------------
 console.log('\n--- Ventana de tiempo ---')
 
 // Para probar la ventana de tiempo hace falta un postor que NO sea el
@@ -195,9 +187,7 @@ if (programada) {
   check(false, 'oferta antes de empezar', 'no hay subasta programada de prueba')
 }
 
-// ------------------------------------------------------------------
 // Estado personal y anonimato
-// ------------------------------------------------------------------
 console.log('\n--- Estado personal y anonimato ---')
 
 const { data: eAna } = await ana.cliente.rpc('fn_estado_subasta', { p_vehiculo_id: id })
@@ -235,9 +225,7 @@ check(
     : '0 filas devueltas',
 )
 
-// ------------------------------------------------------------------
 // Difusion en tiempo real
-// ------------------------------------------------------------------
 console.log('\n--- Difusion en tiempo real ---')
 
 const canal = admin.channel(`subasta:${id}`)
@@ -284,14 +272,10 @@ if (recibido?.error) {
   )
 }
 
-// ------------------------------------------------------------------
 // Limpieza
-// ------------------------------------------------------------------
 await admin.from('vehiculos').delete().eq('id', id)
 
-// ------------------------------------------------------------------
 // Informe
-// ------------------------------------------------------------------
 console.log('')
 for (const r of resultados) {
   console.log(`  ${r.ok ? 'OK   ' : 'FALLA'} ${r.nombre.padEnd(36)} ${r.detalle}`)
