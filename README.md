@@ -4,7 +4,11 @@ Examen de WebDev 2026 · Caso Copart
 
 ## 🌐 Sitio publicado
 
-> **Enlace: _(pendiente — Fase 8)_**
+**https://subasta-vehiculos.vercel.app**
+
+> Enlace al repositorio: https://github.com/joselitogmartinez/subasta-vehiculos
+
+Desplegado en Vercel. El frontend se recompila y se publica solo en cada `push` a `main`.
 
 ## 🔑 Usuarios de prueba
 
@@ -55,6 +59,20 @@ sobre esa subasta.
 | Badges «Vas ganando» / «Oferta superada» | `src/lib/subasta.js` · `src/components/PanelPuja.jsx` |
 | Vista de detalle y carrusel de 5+ fotos | `/vehiculo/:id` · `src/components/Carrusel.jsx` |
 
+## Configuración del despliegue
+
+En Vercel, **Settings → Environment Variables**, para **Production**:
+
+| Variable | ¿Se expone al navegador? |
+|---|---|
+| `VITE_SUPABASE_URL` | Sí, es pública |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Sí, es pública por diseño |
+
+⚠️ **La secret key y la `DATABASE_URL` nunca van en Vercel.** Si se agregan, quedan
+escritas en el bundle que descarga el visitante. Vite sustituye las variables en
+tiempo de compilación: si faltan, **el build no falla** y el sitio se publica en
+blanco. Si la página aparece vacía, revisá esto primero.
+
 ## Configuración requerida en Supabase
 
 En *Dashboard → Authentication → Providers → Email*, los tres interruptores deben quedar así:
@@ -90,14 +108,18 @@ npm run dev
 | `npm run db:migrate` | Aplica `supabase/migrations/*.sql` en orden |
 | `npm run db:seed` | Crea usuarios y datos de demostración |
 | `npm run db:smoke` | Comprueba conectividad con Supabase |
-| `npm run db:verify` | 13 comprobaciones de esquema, RLS y permisos |
-| `npm run db:verify-pujas` | 23 comprobaciones de las reglas de subasta y tiempo real |
-| `npm run db:verify-imagenes` | Comprueba que las galerías tienen 5+ imágenes accesibles |
-| `npm run db:verify-registro` | Comprueba registro, trigger de perfil e inicio de sesión |
-| `npm run db:verify-filtros` | 30 comprobaciones de los filtros multitarea del catálogo |
-| `npm run db:verify-tiempo-real` | 24 comprobaciones del motor de subasta y los badges en vivo |
-| `npm run db:verify-publicacion` | 20 comprobaciones del flujo publicar / editar / eliminar |
-| `npm run db:verify-todo` | Corre todas las verificaciones en secuencia |
+Las verificaciones golpean la base de datos real, no mocks. Total: **119 comprobaciones**.
+
+| Comando | Comprobaciones | Qué valida |
+|---|---|---|
+| `npm run db:verify` | 13 | Esquema, RLS, permisos y ausencia de fugas |
+| `npm run db:verify-registro` | 9 | Registro, trigger de perfil, login y aislamiento |
+| `npm run db:verify-filtros` | 30 | Filtros multitarea del catálogo contra la base real |
+| `npm run db:verify-pujas` | 23 | Reglas de puja: base, +10%, tiempos, subasta propia |
+| `npm run db:verify-tiempo-real` | 24 | Flujo entre dos navegadores y badges en vivo |
+| `npm run db:verify-publicacion` | 20 | Publicar, editar, eliminar y el mínimo de 5 fotos |
+| `npm run db:verify-imagenes` | — | Que las galerías tengan 5+ imágenes accesibles |
+| `npm run db:verify-todo` | **119** | Corre todas en secuencia |
 
 ## Estructura
 
@@ -134,5 +156,5 @@ público). El seed imprime el desglose de licencias de cada imagen.
 
 ## Asignatura
 
-- Asignatura: _(completar)_
-- Catedrático: _(completar)_
+- **Asignatura:** TAREA-PROGRAMACIÓN AVANZADA
+- **Integrante:** Augusto Girón
