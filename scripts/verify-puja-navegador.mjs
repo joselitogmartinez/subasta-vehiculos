@@ -14,12 +14,10 @@
 
 import { spawn } from 'node:child_process'
 import { once } from 'node:events'
-import { writeFile, mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const raiz = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const CHROME =
   process.env.CHROME_PATH ??
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
@@ -173,15 +171,24 @@ const inicioOk = await evaluar(`
 check(inicioOk === 'ok', 'formulario de login', inicioOk === 'ok' ? 'campos llenados' : inicioOk)
 await new Promise((r) => setTimeout(r, 6000))
 
-// Tras el clic, Supabase guarda la sesion y la SPA navega sola. El exito
-// del login se juzga por haber salido de la pantalla de /login, no por
-// buscar un texto: asi no depende de acentos ni de como se componga el
-// navbar.
+// Tras el clic, Supabase guarda la sesion y la SPA navega sola.
+//
+// Se usa textContent y no innerText: en Chrome headless el viewport
+// ronda los 800px, por debajo del breakpoint de 900px, asi que el panel
+// del navbar queda en display:none (menu movil) y innerText no devuelve
+// nada de ahi. Con textContent el texto se lee igual.
+//
+// El exito del login se juzga por haber salido de /login y por que el
+// navbar muestre los enlaces de sesion, no por un texto suelto: asi no
+// depende de acentos ni de como este compuesto el menu.
 const sesionActiva = await evaluar(`
   (() => {
-    const enLogin = location.pathname.startsWith('/login')
-    const conSesion = /Mis publicaciones/i.test(document.body.innerText)
-    return JSON.stringify({ enLogin, conSesion, ruta: location.pathname })
+    const contenido = document.body.textContent || ''
+    return JSON.stringify({
+      enLogin: location.pathname.startsWith('/login'),
+      conSesion: /Mis publicaciones/.test(contenido) && !/Crear cuenta gratis/.test(contenido),
+      ruta: location.pathname,
+    })
   })()
 `)
 
@@ -189,7 +196,7 @@ const estadoSesion = JSON.parse(sesionActiva)
 check(
   !estadoSesion.enLogin && estadoSesion.conSesion,
   'sesion iniciada',
-  `ruta=${estadoSesion.ruta}, con enlaces de sesion=${estadoSesion.conSesion}`,
+  `ruta=${estadoSesion.ruta}, enlaces de sesion=${estadoSesion.conSesion}`,
 )
 
 // ------------------------------------------------------------------
@@ -240,19 +247,22 @@ check(
 if (idVehiculo) {
   await ir(`${BASE}/vehiculo/${idVehiculo}`, 5000)
 
-  const panel = await evaluar(`
-    (() => {
-      const t = document.body.innerText
-      return {
-        tieneFormulario: !!document.querySelector('input[inputmode="numeric"]'),
-        muestraMinimo: /Oferta minima/i.test(t),
-        muestraEstado: /Oferta actual/i.test(t),
-        aviso: (t.match(/Se el primero|Aun no has ofertado|Vas ganando|ha sido superada|Esta subasta es tu/i) || ['ninguno'])[0],
-        textoBoton: (([...document.querySelectorAll('button')].find((b) => /Ofertar/i.test(b.textContent)) || {}).textContent || 'no').trim(),
-        minimo: (t.match(/Q[\\s\\u00a0]?[\\d,]+/g) || []).slice(0, 3).join(' | '),
-      }
-    })()
-  `)
+// A partir de aqui las comprobaciones de texto usan textContent: el
+// viewport de Chrome headless esta por debajo del breakpoint movil y
+// innerText omite lo que esta oculto por CSS.
+const panel = await evaluar(`
+  (() => {
+    const t = document.body.textContent || ''
+    return {
+      tieneFormulario: !!document.querySelector('input[inputmode="numeric"]'),
+      muestraMinimo: /Oferta minima/i.test(t),
+      muestraEstado: /Oferta actual/i.test(t),
+      aviso: (t.match(/Se el primero|Aun no has ofertado|Vas ganando|ha sido superada|Esta subasta es tu/i) || ['ninguno'])[0],
+      textoBoton: (([...document.querySelectorAll('button')].find((b) => /Ofertar/i.test(b.textContent)) || {}).textContent || 'no').trim(),
+      minimo: (t.match(/Q[\\s\\u00a0]?[\\d,]+/g) || []).slice(0, 3).join(' | '),
+    }
+  })()
+`)
 
   check(panel.tieneFormulario === true, 'panel de puja visible', panel.tieneFormulario ? 'campo de oferta presente' : 'no se ve el formulario')
   check(panel.muestraMinimo === true, 'muestra el monto minimo', panel.minimo || 'no aparece')
@@ -274,7 +284,7 @@ if (idVehiculo) {
     (() => {
       const campo = document.querySelector('input[inputmode="numeric"]')
       if (!campo) return false
-      const valor = (document.body.innerText.match(/Oferta minima\\s*Q[\\s\\u00a0]?([\\d,]+)/) || [])[1]
+      const valor = ((document.body.textContent || '').match(/Oferta minima\\s*Q[\\s\\u00a0]?([\\d,]+)/) || [])[1]
       if (!valor) return false
       const monto = Number(valor.replace(/,/g, ''))
       const setter = Object.getOwnPropertyDescriptor(campo.constructor.prototype, 'value').set

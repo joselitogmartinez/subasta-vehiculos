@@ -108,7 +108,7 @@ npm run dev
 | `npm run db:migrate` | Aplica `supabase/migrations/*.sql` en orden |
 | `npm run db:seed` | Crea usuarios y datos de demostración |
 | `npm run db:smoke` | Comprueba conectividad con Supabase |
-Las verificaciones golpean la base de datos real y el build real, no mocks. Total: **131 comprobaciones**.
+Las verificaciones golpean la base de datos real y el build real, no mocks. Total: **143 comprobaciones**.
 
 | Comando | Comprobaciones | Qué valida |
 |---|---|---|
@@ -119,20 +119,36 @@ Las verificaciones golpean la base de datos real y el build real, no mocks. Tota
 | `npm run db:verify-tiempo-real` | 24 | Flujo entre dos navegadores y badges en vivo |
 | `npm run db:verify-publicacion` | 20 | Publicar, editar, eliminar y el mínimo de 5 fotos |
 | `npm run db:verify-hooks` | 31 archivos | Que todo hook de React usado esté importado |
+| `npm run db:verify-eslint` | 4 pruebas | Que el verificador detecte los bugs históricos |
 | `npm run db:verify-navegador` | 6 marcadores | Que React renderice de verdad en Chrome |
 | `npm run db:verify-rutas` | 8 rutas | Que cada ruta renderice en un navegador real |
+| `npm run db:verify-puja-navegador` | 12 | El flujo de pujar contra el sitio publicado |
 | `npm run db:verify-imagenes` | — | Que las galerías tengan 5+ imágenes accesibles |
-| `npm run db:verify-todo` | **131** | Corre todas en secuencia |
+| `npm run db:verify-todo` | **143** | Corre todas en secuencia |
 
-### Por qué hay una verificación en navegador
+### Por qué hay tantas verificaciones
 
-Durante el desarrollo el sitio se publicó en blanco. La causa fue un `useCallback` sin
-importar en `Home.jsx`: el linter no lo marca, `vite build` termina sin errores y los
-assets se sirven bien. El error solo aparece cuando el código **se ejecuta**.
+El sitio se publicó dos veces en blanco y en ambos casos la causa fue la misma:
+identificadores usados sin declarar. Ni oxlint ni `vite build` las detectan, porque
+ninguno de los dos ejecuta el código.
 
-Las comprobaciones estáticas no lo detectan, por lo que se añadieron tres que sí lo hacen:
-`verify-hooks` revisa los imports, y `verify-navegador` y `verify-rutas` cargan el build de
-producción en Chrome headless y comprueban que el DOM pinte contenido real.
+| Fallo | Síntoma |
+|---|---|
+| `useCallback` sin importar | La portada no renderizaba nada |
+| `minimoAlcanzado` sin declarar | El panel de puja reventaba al ofertar |
+
+Ambos aparecieron **solo al abrir el sitio o al pulsar "Ofertar"**, nunca en las
+comprobaciones estáticas. Por eso el proyecto incluye cuatro barreras que sí ejecutan
+el código:
+
+- `lint:undef` — ESLint con la regla `no-undef`. Oxlint se mantiene como linter
+  principal por ser más rápido, pero no cubre esta regla.
+- `probar-eslint.mjs` — reintroduce a propósito los dos bugs históricos y confirma
+  que el verificador los detecta. Un verificador que no falla cuando debe no sirve.
+- `verify-navegador.mjs` y `verify-rutas.mjs` — cargan el build de producción en Chrome
+  headless y comprueban que el DOM pinte contenido real.
+- `verify-puja-navegador.mjs` — recorre el flujo completo de ofertar contra el sitio
+  publicado, con inicio de sesión y eligiendo una subasta ajena al usuario.
 
 ## Estructura
 
