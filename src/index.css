@@ -1,0 +1,209 @@
+/* ------------------------------------------------------------------
+   Base global. Paleta CLARA por requisito del examen: se penaliza el
+   uso de colores oscuros en la presentacion.
+   ------------------------------------------------------------------ */
+
+:root {
+  /* Superficies */
+  --fondo: #f4f7fb;
+  --superficie: #ffffff;
+  --superficie-alterna: #f8fafc;
+
+  /* Texto */
+  --texto: #0f172a;
+  --texto-medio: #475569;
+  --texto-suave: #64748b;
+
+  /* Marca */
+  --primario: #1565c0;
+  --primario-fuerte: #0d47a1;
+  --primario-suave: #eff6ff;
+  --acento: #f97316;
+  --acento-suave: #fff7ed;
+
+  /* Estado de dano del vehiculo */
+  --verde: #16a34a;
+  --verde-suave: #f0fdf4;
+  --amarillo: #ca8a04;
+  --amarillo-suave: #fefce8;
+  --rojo: #dc2626;
+  --rojo-suave: #fef2f2;
+
+  /* Bordes y sombra */
+  --borde: #e2e8f0;
+  --borde-fuerte: #cbd5e1;
+  --sombra: 0 1px 3px rgb(15 23 42 / 0.08);
+  --sombra-media: 0 4px 12px rgb(15 23 42 / 0.08);
+  --sombra-alta: 0 12px 28px rgb(15 23 42 / 0.12);
+
+  /* Forma */
+  --radio: 14px;
+  --radio-sm: 10px;
+  --radio-full: 999px;
+
+  /* Tipografia */
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.25;
+  color: var(--texto);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--primario);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primario);
+  outline-offset: 2px;
+}
+
+/* Visible para lectores de pantalla, invisible en pantalla. */
+.sr-solo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pagina-centrada {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  padding: 2rem 1rem;
+}
+
+/* ------------------------------------------------------------- Layout */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.app__contenido {
+  flex: 1;
+  width: 100%;
+}
+
+.app__pie {
+  margin-top: 3rem;
+  padding: 1.5rem 1.25rem;
+  border-top: 1px solid var(--borde);
+  background: var(--superficie);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* --------------------------------------- Marcador de pantalla vacia */
+.proximamente {
+  display: grid;
+  place-items: center;
+  min-height: 62vh;
+  padding: 2.5rem 1.25rem;
+}
+
+.proximamente__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: 34rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.proximamente__icono {
+  font-size: 2.4rem;
+}
+
+.proximamente__titulo {
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+}
+
+.proximamente__texto {
+  color: var(--texto-suave);
+  font-size: 0.93rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

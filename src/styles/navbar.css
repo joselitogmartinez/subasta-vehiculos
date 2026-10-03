@@ -1,0 +1,312 @@
+/* ------------------------------------------------------------------
+   Barra de navegacion. Fondo claro, borde inferior sutil.
+   ------------------------------------------------------------------ */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+}
+
+.nav__interior {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+}
+
+/* ---------------------------------------------------------------- Marca */
+.nav__marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--texto);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.nav__marca:hover {
+  text-decoration: none;
+}
+
+.nav__logo {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--radio-sm);
+  background: var(--acento-suave);
+  font-size: 1.15rem;
+}
+
+.nav__nombre--acento {
+  color: var(--acento);
+}
+
+/* ------------------------------------------------------------- Panel */
+.nav__panel {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: auto;
+}
+
+.nav__hamburguesa {
+  display: none;
+  margin-left: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-sm);
+  background: var(--superficie);
+}
+
+.nav__hamburguesa-barra,
+.nav__hamburguesa-barra::before,
+.nav__hamburguesa-barra::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--texto-medio);
+}
+
+.nav__hamburguesa-barra {
+  position: relative;
+}
+
+.nav__hamburguesa-barra::before,
+.nav__hamburguesa-barra::after {
+  content: '';
+  position: absolute;
+}
+
+.nav__hamburguesa-barra::before {
+  top: -6px;
+}
+
+.nav__hamburguesa-barra::after {
+  top: 6px;
+}
+
+/* ------------------------------------------------------------ Enlaces */
+.nav__enlaces {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav__enlaces a {
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radio-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--texto-medio);
+}
+
+.nav__enlaces a:hover {
+  background: var(--superficie-alterna);
+  color: var(--texto);
+  text-decoration: none;
+}
+
+.nav__enlaces a.activo {
+  background: var(--primario-suave);
+  color: var(--primario);
+}
+
+/* ------------------------------------------------------------- Sesion */
+.nav__sesion {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav__enlace-secundario {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--primario);
+}
+
+.nav__cargando {
+  display: block;
+  width: 7rem;
+  height: 1.6rem;
+  border-radius: var(--radio-sm);
+  background: linear-gradient(90deg, #eef2f7 25%, #e2e8f0 37%, #eef2f7 63%);
+  background-size: 400% 100%;
+  animation: nav-brillo 1.3s ease infinite;
+}
+
+@keyframes nav-brillo {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.nav__usuario {
+  position: relative;
+}
+
+.nav__perfil {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.35rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-full);
+  background: var(--superficie);
+  text-align: left;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.nav__perfil:hover {
+  border-color: var(--borde-fuerte);
+  background: var(--superficie-alterna);
+}
+
+.nav__avatar {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--primario);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.nav__perfil-datos {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.nav__perfil-nombre {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.nav__perfil-correo {
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+  max-width: 15ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav__desplegable {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  display: none;
+  flex-direction: column;
+  min-width: 14rem;
+  padding: 0.35rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-alta);
+}
+
+.nav__desplegable--abierto {
+  display: flex;
+}
+
+.nav__desplegable a,
+.nav__desplegable button {
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: var(--radio-sm);
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--texto-medio);
+}
+
+.nav__desplegable a:hover,
+.nav__desplegable button:hover {
+  background: var(--superficie-alterna);
+  color: var(--texto);
+  text-decoration: none;
+}
+
+.nav__desplegable button {
+  color: var(--rojo);
+  border-top: 1px solid var(--borde);
+  border-radius: 0 0 var(--radio-sm) var(--radio-sm);
+  margin-top: 0.25rem;
+}
+
+/* ------------------------------------------------------------ Movil */
+@media (max-width: 900px) {
+  .nav__hamburguesa {
+    display: block;
+  }
+
+  .nav__panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 1rem 1.25rem 1.25rem;
+    background: var(--superficie);
+    border-bottom: 1px solid var(--borde);
+    box-shadow: var(--sombra-media);
+  }
+
+  .nav__panel--abierto {
+    display: flex;
+  }
+
+  .nav__enlaces {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+  }
+
+  .nav__enlaces a {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .nav__sesion {
+    flex-direction: column;
+    align-items: stretch;
+    border-top: 1px solid var(--borde);
+    padding-top: 0.75rem;
+  }
+
+  .nav__usuario {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav__desplegable {
+    position: static;
+    display: flex;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    min-width: 0;
+  }
+}

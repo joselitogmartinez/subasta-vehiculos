@@ -1,0 +1,14 @@
+# Normaliza los finales de linea para que el repo no cambie segun quien
+# lo clone. Sin esto, git convierte LF a CRLF en Windows y cada archivo
+# aparece modificado en un solo sistema operativo.
+
+* text=auto eol=lf
+
+# Archivos que deben quedar exactamente como son
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.pdf binary

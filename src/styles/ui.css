@@ -1,0 +1,332 @@
+/* ------------------------------------------------------------------
+   Estilos de las primitivas de interfaz.
+   Paleta clara por requisito del examen. Sin temas oscuros.
+   ------------------------------------------------------------------ */
+
+/* ---------------------------------------------------------------- Boton */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: var(--radio-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.btn--lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1.02rem;
+}
+
+.btn--ancho {
+  width: 100%;
+}
+
+.btn--primario {
+  background: var(--primario);
+  color: #fff;
+  box-shadow: var(--sombra);
+}
+.btn--primario:hover:not(:disabled) {
+  background: var(--primario-fuerte);
+  box-shadow: var(--sombra-media);
+}
+
+.btn--acento {
+  background: var(--acento);
+  color: #fff;
+  box-shadow: var(--sombra);
+}
+.btn--acento:hover:not(:disabled) {
+  background: #ea580c;
+  box-shadow: var(--sombra-media);
+}
+
+.btn--secundario {
+  background: var(--superficie);
+  color: var(--primario);
+  border-color: var(--borde-fuerte);
+}
+.btn--secundario:hover:not(:disabled) {
+  background: var(--primario-suave);
+  border-color: var(--primario);
+}
+
+.btn--fantasma {
+  background: transparent;
+  color: var(--texto-medio);
+}
+.btn--fantasma:hover:not(:disabled) {
+  background: var(--superficie-alterna);
+  color: var(--texto);
+}
+
+.btn--peligro {
+  background: var(--rojo);
+  color: #fff;
+}
+.btn--peligro:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.btn__spinner {
+  width: 0.95em;
+  height: 0.95em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+.btn__contenido--oculto {
+  visibility: hidden;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------- Campo */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.campo--ancho {
+  grid-column: 1 / -1;
+}
+
+.campo__etiqueta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-medio);
+}
+
+.campo__input {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-sm);
+  background: var(--superficie);
+  color: var(--texto);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.campo__input::placeholder {
+  color: #94a3b8;
+}
+
+textarea.campo__input {
+  resize: vertical;
+  min-height: 4.5rem;
+  line-height: 1.5;
+}
+
+.campo__input:focus {
+  outline: none;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgb(21 101 192 / 0.14);
+}
+
+.campo__input:disabled {
+  background: var(--superficie-alterna);
+  color: var(--texto-suave);
+  cursor: not-allowed;
+}
+
+.campo__input--error {
+  border-color: var(--rojo);
+}
+.campo__input--error:focus {
+  border-color: var(--rojo);
+  box-shadow: 0 0 0 3px rgb(220 38 38 / 0.14);
+}
+
+.campo__select select {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-sm);
+  background: var(--superficie);
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.campo__select select:focus {
+  outline: none;
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px rgb(21 101 192 / 0.14);
+}
+
+.campo__error {
+  font-size: 0.8rem;
+  color: var(--rojo);
+}
+
+.campo__ayuda {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+/* --------------------------------------------------------------- Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radio-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.badge__punto {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.badge--verde {
+  background: var(--verde-suave);
+  color: var(--verde);
+}
+.badge--amarillo {
+  background: var(--amarillo-suave);
+  color: var(--amarillo);
+}
+.badge--rojo {
+  background: var(--rojo-suave);
+  color: var(--rojo);
+}
+.badge--azul {
+  background: var(--primario-suave);
+  color: var(--primario);
+}
+.badge--naranja {
+  background: var(--acento-suave);
+  color: #c2410c;
+}
+.badge--neutro {
+  background: #f1f5f9;
+  color: var(--texto-medio);
+}
+
+/* -------------------------------------------------------------- Alerta */
+.alerta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid;
+  border-radius: var(--radio-sm);
+  font-size: 0.88rem;
+}
+
+.alerta__titulo {
+  font-weight: 700;
+}
+
+.alerta--info {
+  background: var(--primario-suave);
+  border-color: #bfdbfe;
+  color: var(--primario-fuerte);
+}
+
+.alerta--exito {
+  background: var(--verde-suave);
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+.alerta--error {
+  background: var(--rojo-suave);
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.alerta--aviso {
+  background: var(--amarillo-suave);
+  border-color: #fde68a;
+  color: #a16207;
+}
+
+/* ------------------------------------------------------- Cargando/Vacio */
+.cargando {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 3rem 1rem;
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+
+.cargando__spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--borde-fuerte);
+  border-top-color: var(--primario);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  background: var(--superficie);
+  border: 1px dashed var(--borde-fuerte);
+  border-radius: var(--radio);
+}
+
+.vacio__icono {
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
+.vacio__titulo {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.vacio__texto {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}

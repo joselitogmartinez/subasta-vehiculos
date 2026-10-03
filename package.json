@@ -1,0 +1,43 @@
+{
+  "name": "subastas-copart",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Plataforma web de subastas de vehiculos en tiempo real (caso Copart)",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "oxlint",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "db:setup": "npm run db:migrate && npm run db:seed",
+"db:verify": "node scripts/verify-rls.mjs",
+"db:verify-pujas": "node scripts/verify-pujas.mjs",
+"db:verify-imagenes": "node scripts/verify-imagenes.mjs",
+"db:verify-registro": "node scripts/verify-registro.mjs",
+"db:verify-filtros": "node scripts/verify-filtros.mjs",
+"db:verify-tiempo-real": "node scripts/verify-tiempo-real.mjs",
+"db:verify-publicacion": "node scripts/verify-publicacion.mjs",
+"db:verify-todo": "npm run db:verify && npm run db:verify-registro && npm run db:verify-filtros && npm run db:verify-pujas && npm run db:verify-tiempo-real && npm run db:verify-publicacion && npm run db:verify-imagenes",
+"db:smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "dotenv": "^18.0.5",
+    "oxlint": "^1.81.0",
+    "pg": "^8.23.1",
+    "vite": "^8.3.0"
+  }
+}
