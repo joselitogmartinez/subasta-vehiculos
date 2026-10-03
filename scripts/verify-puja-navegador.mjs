@@ -247,18 +247,20 @@ if (idVehiculo) {
 // viewport de Chrome headless esta por debajo del breakpoint movil y
 // innerText omite lo que esta oculto por CSS.
 const panel = await evaluar(`
-  (() => {
-    const t = document.body.textContent || ''
-    return {
-      tieneFormulario: !!document.querySelector('input[inputmode="numeric"]'),
-      muestraMinimo: /Oferta minima/i.test(t),
-      muestraEstado: /Oferta actual/i.test(t),
-      aviso: (t.match(/Se el primero|Aun no has ofertado|Vas ganando|ha sido superada|Esta subasta es tu/i) || ['ninguno'])[0],
-      textoBoton: (([...document.querySelectorAll('button')].find((b) => /Ofertar/i.test(b.textContent)) || {}).textContent || 'no').trim(),
-      minimo: (t.match(/Q[\\s\\u00a0]?[\\d,]+/g) || []).slice(0, 3).join(' | '),
-    }
-  })()
-`)
+    (() => {
+      const t = document.body.textContent || ''
+      return {
+        tieneFormulario: !!document.querySelector('input[inputmode="numeric"]'),
+        muestraMinimo: /Oferta minima/i.test(t),
+        // El encabezado dice "Oferta actual" si hay pujas y "Monto base"
+        // si todavia no las hay: ambos son correctos segun el estado.
+        muestraEstado: /Oferta actual|Monto base/i.test(t),
+        aviso: (t.match(/Se el primero|Aun no has ofertado|Vas ganando|ha sido superada|Esta subasta es tu/i) || ['ninguno'])[0],
+        textoBoton: (([...document.querySelectorAll('button')].find((b) => /Ofertar/i.test(b.textContent)) || {}).textContent || 'no').trim(),
+        minimo: (t.match(/Q[\\s\\u00a0]?[\\d,]+/g) || []).slice(0, 3).join(' | '),
+      }
+    })()
+  `)
 
   check(panel.tieneFormulario === true, 'panel de puja visible', panel.tieneFormulario ? 'campo de oferta presente' : 'no se ve el formulario')
   check(panel.muestraMinimo === true, 'muestra el monto minimo', panel.minimo || 'no aparece')
