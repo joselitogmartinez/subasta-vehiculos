@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Perfiles temporales de Chrome usados por las verificaciones de navegador
+.tmp-chrome-*
+.tmp-chrome-perfil/
+.tmp-dbg/
+
 # Secretos: nunca subir al repositorio
 .env
 .env.*

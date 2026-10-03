@@ -4,7 +4,7 @@ Examen de WebDev 2026 · Caso Copart
 
 ## 🌐 Sitio publicado
 
-**https://subasta-vehiculos.vercel.app**
+**https://subasta-vehiculos-faty.vercel.app**
 
 > Enlace al repositorio: https://github.com/joselitogmartinez/subasta-vehiculos
 
@@ -108,7 +108,7 @@ npm run dev
 | `npm run db:migrate` | Aplica `supabase/migrations/*.sql` en orden |
 | `npm run db:seed` | Crea usuarios y datos de demostración |
 | `npm run db:smoke` | Comprueba conectividad con Supabase |
-Las verificaciones golpean la base de datos real, no mocks. Total: **119 comprobaciones**.
+Las verificaciones golpean la base de datos real y el build real, no mocks. Total: **131 comprobaciones**.
 
 | Comando | Comprobaciones | Qué valida |
 |---|---|---|
@@ -118,8 +118,21 @@ Las verificaciones golpean la base de datos real, no mocks. Total: **119 comprob
 | `npm run db:verify-pujas` | 23 | Reglas de puja: base, +10%, tiempos, subasta propia |
 | `npm run db:verify-tiempo-real` | 24 | Flujo entre dos navegadores y badges en vivo |
 | `npm run db:verify-publicacion` | 20 | Publicar, editar, eliminar y el mínimo de 5 fotos |
+| `npm run db:verify-hooks` | 31 archivos | Que todo hook de React usado esté importado |
+| `npm run db:verify-navegador` | 6 marcadores | Que React renderice de verdad en Chrome |
+| `npm run db:verify-rutas` | 8 rutas | Que cada ruta renderice en un navegador real |
 | `npm run db:verify-imagenes` | — | Que las galerías tengan 5+ imágenes accesibles |
-| `npm run db:verify-todo` | **119** | Corre todas en secuencia |
+| `npm run db:verify-todo` | **131** | Corre todas en secuencia |
+
+### Por qué hay una verificación en navegador
+
+Durante el desarrollo el sitio se publicó en blanco. La causa fue un `useCallback` sin
+importar en `Home.jsx`: el linter no lo marca, `vite build` termina sin errores y los
+assets se sirven bien. El error solo aparece cuando el código **se ejecuta**.
+
+Las comprobaciones estáticas no lo detectan, por lo que se añadieron tres que sí lo hacen:
+`verify-hooks` revisa los imports, y `verify-navegador` y `verify-rutas` cargan el build de
+producción en Chrome headless y comprueban que el DOM pinte contenido real.
 
 ## Estructura
 

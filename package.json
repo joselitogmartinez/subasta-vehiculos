@@ -23,7 +23,10 @@
 "db:verify-tiempo-real": "node scripts/verify-tiempo-real.mjs",
 "db:verify-publicacion": "node scripts/verify-publicacion.mjs",
 "db:verify-todo": "npm run db:verify && npm run db:verify-registro && npm run db:verify-filtros && npm run db:verify-pujas && npm run db:verify-tiempo-real && npm run db:verify-publicacion && npm run db:verify-imagenes",
-"db:smoke": "node scripts/smoke.mjs"
+"db:verify-hooks": "node scripts/verify-hooks.mjs",
+    "db:verify-navegador": "npm run build && node scripts/verify-navegador.mjs",
+    "db:verify-rutas": "npm run build && node scripts/verify-rutas.mjs",
+    "db:smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

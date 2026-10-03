@@ -20,8 +20,16 @@ export default function DetalleVehiculo() {
   return <DetalleVehiculoInterno key={id} id={id} />
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 function DetalleVehiculoInterno({ id }) {
   const { usuario, autenticado } = useAuth()
+
+  // Un id con formato invalido hace que Postgres responda
+  // "invalid input syntax for type uuid", y ese error tecnico se
+  // terminaba mostrando al visitante. Se comprueba antes de consultar
+  // para que una URL mal escrita caiga en el aviso normal.
+  const idInvalido = !UUID.test(id ?? '')
 
   const [vehiculo, setVehiculo] = useState(null)
   const [estado, setEstado] = useState(null)
@@ -29,14 +37,18 @@ function DetalleVehiculoInterno({ id }) {
 
   // Lo que quedo guardado localmente se lee al montar, para pintar el
   // estado sin parpadeo. fn_estado_subasta lo confirma despues.
-  const [miOferta, setMiOferta] = useState(() => leerMiOferta(id, usuarioId))
+  const [miOferta, setMiOferta] = useState(() =>
+    UUID.test(id ?? '') ? leerMiOferta(id, usuarioId) : null,
+  )
 
-  const [cargando, setCargando] = useState(true)
+  const [cargando, setCargando] = useState(!idInvalido)
   const [error, setError] = useState('')
-  const [noEncontrado, setNoEncontrado] = useState(false)
+  const [noEncontrado, setNoEncontrado] = useState(idInvalido)
 
   // ------------------------------------------------------------ Carga
   useEffect(() => {
+    if (idInvalido) return
+
     let vigente = true
 
     async function cargar() {
@@ -92,7 +104,7 @@ function DetalleVehiculoInterno({ id }) {
     return () => {
       vigente = false
     }
-  }, [id])
+  }, [id, idInvalido])
 
   // --------------------------------------------------- Tiempo real
   const alCambiar = useCallback((payload) => {
