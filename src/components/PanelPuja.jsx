@@ -39,6 +39,7 @@ export default function PanelPuja({
 
 const minimo = Number(estado.monto_minimo) || 0
   const montoNumerico = parsearMonto(monto)
+  const minimoAlcanzado = montoNumerico !== null && montoNumerico >= minimo
 
   const enviar = async (e) => {
     e?.preventDefault()
